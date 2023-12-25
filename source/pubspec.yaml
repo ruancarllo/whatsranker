@@ -1,0 +1,8 @@
+name: whatsranker
+description: A tool to identify the most active conversations on your WhatsApp
+
+environment:
+  sdk: ^3.1.0
+
+dependencies:
+  archive: 3.4.9
