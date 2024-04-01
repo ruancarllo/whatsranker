@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:archive/archive_io.dart';
 
 void main() async {
@@ -23,13 +24,9 @@ void main() async {
 
       String chatContent = await getZipChat(directoryEntity.path);
 
-      Iterable<Match> allMessagesMatches = RegExp('\\[\\d{2}/\\d{2}/$currentYear \\d{2}:\\d{2}:\\d{2}]').allMatches(chatContent);
-      Iterable<Match> receivedMessagesMatches = RegExp('\\[\\d{2}/\\d{2}/$currentYear \\d{2}:\\d{2}:\\d{2}] $chatName:').allMatches(chatContent);
-      
-      int sentMessagesCount = allMessagesMatches.length - receivedMessagesMatches.length;
-      int receivedMessagesCount = receivedMessagesMatches.length;
+      Iterable<Match> allMessagesMatches = RegExp('\\[\\d{2}\\/\\d{2}\\/$currentYear,? (\\d{1}|\\d{2}):\\d{2}:\\d{2}( (A|P)M])?').allMatches(chatContent);
 
-      chatsRanking[chatName] = sentMessagesCount + receivedMessagesCount;
+      chatsRanking[chatName] = allMessagesMatches.length;
     }
   }
 
@@ -51,7 +48,7 @@ Future<String> getZipChat(String zipPath) async {
 
   for (ArchiveFile zipFile in zipArchive) {
     if (zipFile.name == '_chat.txt') {
-      return String.fromCharCodes(zipFile.content);
+      return utf8.decode(zipFile.content);
     }
   }
 
